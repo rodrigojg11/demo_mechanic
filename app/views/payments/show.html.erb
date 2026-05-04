@@ -1,0 +1,33 @@
+<main class="container py-5">
+  <section class="mx-auto" style="max-width: 720px;">
+    <p class="text-uppercase text-muted small fw-semibold mb-2">Cruz Auto payment</p>
+    <h1 class="h3 mb-3">Appointment payment</h1>
+
+    <div class="border rounded-2 p-4 mb-4">
+      <dl class="row mb-0">
+        <dt class="col-sm-4">Service</dt>
+        <dd class="col-sm-8"><%= @appointment.service.name %></dd>
+
+        <dt class="col-sm-4">Appointment</dt>
+        <dd class="col-sm-8"><%= @appointment.scheduled_at.strftime("%a %b %-d, %Y at %-I:%M %p") %></dd>
+
+        <dt class="col-sm-4">Amount</dt>
+        <dd class="col-sm-8"><%= number_to_currency(@payment.amount) %></dd>
+
+        <dt class="col-sm-4">Status</dt>
+        <dd class="col-sm-8"><%= @payment.status.humanize %></dd>
+      </dl>
+    </div>
+
+    <% if @payment.pending? && @payment.pay_now? %>
+      <p class="lead">Stripe checkout will be connected here. Your appointment request is already saved.</p>
+      <%= link_to "Back to booking", root_path(anchor: "booking"), class: "btn btn-primary" %>
+    <% elsif @payment.pending? %>
+      <p class="lead">No advance payment is required. You can pay after the service is completed.</p>
+      <%= link_to "Back to booking", root_path(anchor: "booking"), class: "btn btn-primary" %>
+    <% else %>
+      <p class="lead">This payment is currently <%= @payment.status.humanize.downcase %>.</p>
+      <%= link_to "Back to booking", root_path(anchor: "booking"), class: "btn btn-primary" %>
+    <% end %>
+  </section>
+</main>

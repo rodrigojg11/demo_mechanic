@@ -1,128 +1,84 @@
-# Cruz Auto · Taller Mecánico — Demo Homepage
+# Cruz Auto
 
-> Parte de la serie [`DEMOS_homepages`](../) · Diseñado en Oak Cliff, Dallas TX
+Cruz Auto is a Ruby on Rails appointment app for an auto repair shop in Oak Cliff, Dallas. The current product focuses on customer booking, availability, confirmation links, calendar invites, notifications, and optional payments.
 
----
+The app is intentionally not an admin dashboard. Customers can request an appointment and choose either advance payment or payment after service. Payment never blocks appointment creation.
 
-## Español
+## Stack
 
-### ¿Qué es esto?
+- Ruby 3.3.11
+- Rails 7.2
+- SQLite for development and test
+- Bootstrap plus minimal plain CSS
+- ERB views with `simple_form`
+- Stimulus for JavaScript behavior
+- Hotwire Turbo for booking updates
+- Solid Queue for jobs
+- Solid Cache for caching
+- Pagy for future pagination
 
-Homepage de demostración para un taller mecánico ficticio llamado **Cruz Auto**. Es un prototipo interactivo de una sola página, listo para abrir en el navegador sin ningún proceso de instalación o build.
+## Core Flows
 
-Está pensado como base de partida para negocios del rubro automotriz que necesiten una presencia web profesional: basta con reemplazar los textos, precios e imágenes con los datos reales del negocio.
+- Customer selects service, date, time, payment preference, and vehicle details.
+- Availability blocks Sundays, reduced Saturday hours, existing appointments, service duration, and buffer time.
+- Appointment requests create customer, vehicle, appointment, calendar event, payment record, and notifications.
+- Customer response links are signed and expiring links for confirm, cancel, and reschedule.
+- Calendar support starts with internal `.ics` files.
+- Stripe support starts with a checkout placeholder and webhook processing; live Checkout API calls are not connected yet.
 
-### Funcionalidades
+## Payments
 
-- **Hero** cinematográfico con foto de fondo, indicador de estado en vivo y estadísticas del taller
-- **Sobre el mecánico** — bio, especialidades y certificaciones
-- **6 servicios** con precios USD, duración estimada y click directo a reserva
-- **Reserva online multi-step** — servicio → calendario → horario → datos del vehículo (marca, modelo, año) + confirmación por SMS simulada
-- **Galería** con filtros por categoría (Motor, Frenos, Llantas, Suspensión, Diagnóstico) y upload de fotos propias
-- **5 reseñas** de clientes con CTA a Google
-- **Horarios** con resaltado del día actual
-- **Mapa simulado** de W Davis St, Oak Cliff con pin animado
-- **Toggle claro/oscuro** en la navegación
-- **Botón flotante de WhatsApp**
-- Diseño completamente responsive (desktop, tablet, mobile)
+Payment states:
 
-### Cómo usar
+- `optional_pending`
+- `paid_advance`
+- `paid_after_service`
+- `failed`
+- `refunded`
 
-```bash
-# Opción 1 — abrir directo en el navegador
-open index.html
+`pay_after_service` creates a manual `optional_pending` payment and keeps the appointment flow moving.
 
-# Opción 2 — servir con cualquier servidor estático
-npx serve .
-```
+`pay_now` creates a Stripe-intended `optional_pending` payment with a signed checkout URL. The Stripe webhook endpoint marks a payment as `paid_advance` when a valid `checkout.session.completed` event is received.
 
-No requiere Node.js, npm, ni ningún proceso de compilación. React y Babel se cargan desde CDN.
+## Security
 
-### Personalización
+- Rails CSRF protection is enabled for real application forms.
+- Stripe webhook skips CSRF because Stripe cannot provide an authenticity token, and verifies `Stripe-Signature` when a webhook secret is configured.
+- Controllers use strong parameters.
+- Public appointment and payment links use signed IDs with explicit purposes and expirations.
+- Views use Rails escaping helpers; avoid `raw`, `html_safe`, and unsafe redirects.
+- Domain rules live in models and form objects.
 
-Todo el contenido editable está en la sección `DATA` al inicio del `<script type="text/babel">` dentro de `index.html`:
-
-| Constante   | Qué contiene                                      |
-|-------------|---------------------------------------------------|
-| `BUSINESS`  | Nombre, dirección, teléfono, email, redes         |
-| `MECHANIC`  | Bio, foto, especialidades, certificaciones        |
-| `SERVICES`  | Lista de servicios con nombre, precio y duración  |
-| `GALLERY`   | URLs de imágenes y etiquetas de categoría         |
-| `REVIEWS`   | Testimoniales de clientes                         |
-| `HOURS`     | Horarios de atención por día                      |
-
-Para cambiar las fotos, reemplazá las URLs de Unsplash en `GALLERY` y `MECHANIC.photo` por imágenes propias. La galería también permite subir fotos directamente desde el navegador.
-
-### Stack técnico
-
-- **React 18** + **Babel standalone** (JSX compilado en el browser)
-- **CSS custom properties** para el sistema de diseño y el toggle dark/light
-- Sin dependencias npm · Sin proceso de build · Un solo archivo
-
----
-
-## English
-
-### What is this?
-
-A demo homepage for a fictional auto repair shop called **Cruz Auto**. It's a single-page interactive prototype that opens directly in the browser — no installation or build process required.
-
-It's designed as a starting point for automotive businesses that need a professional web presence. Simply replace the text, prices, and images with real business data to make it your own.
-
-### Features
-
-- **Cinematic hero** with background photo, live status indicator, and shop stats
-- **About the mechanic** — bio, specialties, and certifications
-- **6 services** with USD pricing, estimated duration, and direct booking link
-- **Multi-step online booking** — service → calendar → time slot → vehicle info (make, model, year) + simulated SMS confirmation
-- **Gallery** with category filters (Engine, Brakes, Tires, Suspension, Diagnostics) and user photo upload
-- **5 customer reviews** with a Google review CTA
-- **Business hours** with today's highlight
-- **Simulated map** of W Davis St, Oak Cliff with animated pin
-- **Dark/light toggle** in the navigation
-- **Floating WhatsApp button**
-- Fully responsive design (desktop, tablet, mobile)
-
-### How to run
+## Run Locally
 
 ```bash
-# Option 1 — open directly in the browser
-open index.html
-
-# Option 2 — serve with any static server
-npx serve .
+bundle install --path vendor/bundle
+bundle exec rails db:prepare
+bundle exec rails server
 ```
 
-No Node.js, npm, or build step required. React and Babel are loaded from CDN.
+The `rs` shell alias can also run the Rails server when the oh-my-zsh Rails plugin is available.
 
-### Customization
+## Test
 
-All editable content lives in the `DATA` section at the top of the `<script type="text/babel">` block inside `index.html`:
+```bash
+bundle exec rails test
+```
 
-| Constant    | Contents                                          |
-|-------------|---------------------------------------------------|
-| `BUSINESS`  | Name, address, phone, email, social links         |
-| `MECHANIC`  | Bio, photo, specialties, certifications           |
-| `SERVICES`  | Service list with name, price, and duration       |
-| `GALLERY`   | Image URLs and category tags                      |
-| `REVIEWS`   | Customer testimonials                             |
-| `HOURS`     | Business hours per day                            |
+The test suite covers model validations, availability, payment preparation, calendar events, Stripe webhook processing, and critical booking/confirmation flows.
 
-To swap photos, replace the Unsplash URLs in `GALLERY` and `MECHANIC.photo` with your own images. The gallery also supports uploading photos directly from the browser.
+## Project Memory
 
-### Tech stack
+Project preferences live in `PROJECT_PREFERENCES.md`.
 
-- **React 18** + **Babel standalone** (JSX compiled in the browser)
-- **CSS custom properties** for the design system and dark/light toggle
-- No npm dependencies · No build process · Single file
+Working context for future agent sessions lives in `CLAUDE.md`; update it whenever an internal feature or meaningful modification is completed.
 
----
+## Legacy Static Prototype
 
-## Demo series
+The original single-file static prototype has been archived at:
 
-| Project | Business |
-|---|---|
-| [`demo_barber`](../demo_barber/) | ST Machine Barber Studio · Oak Cliff, Dallas |
-| [`demo_nails`](../demo_nails/) | Pao Nails · Brickell, Miami |
-| [`demo_pastry`](../demo_pastry/) | Dulce Encanto Repostería · Medellín |
-| [`demo_mechanic`](../demo_mechanic/) | Cruz Auto · Oak Cliff, Dallas |
+```text
+docs/archive/legacy-index.html
+```
+
+Do not build new features in the archived file.

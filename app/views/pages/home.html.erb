@@ -1,0 +1,315 @@
+<% content_for :title, "#{@business[:full_name]} · #{@business[:region]}" %>
+
+<nav class="site-nav" data-nav>
+  <a class="brand" href="#top" data-scroll>
+    <span class="brand-mark">CA</span>
+    <span class="brand-copy">
+      <strong>CRUZ·AUTO</strong>
+      <small>AUTO REPAIR SHOP</small>
+    </span>
+  </a>
+
+  <div class="nav-links">
+    <a href="#about" data-scroll>Shop</a>
+    <a href="#services" data-scroll>Services</a>
+    <a href="#booking" data-scroll>Book</a>
+    <a href="#gallery" data-scroll>Gallery</a>
+    <a href="#reviews" data-scroll>Reviews</a>
+    <a href="#contact" data-scroll>Contact</a>
+  </div>
+
+  <div class="nav-actions">
+    <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle theme">☼</button>
+    <a class="nav-cta" href="#booking" data-scroll>Book</a>
+    <button class="icon-btn nav-burger" type="button" data-menu-open aria-label="Menu"><%= icon "menu", size: 18 %></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" data-menu>
+  <div class="mobile-menu-head">
+    <span class="brand"><span class="brand-mark">CA</span><strong>CRUZ·AUTO</strong></span>
+    <button class="icon-btn" type="button" data-menu-close aria-label="Close"><%= icon "x", size: 18 %></button>
+  </div>
+  <div class="mobile-menu-links">
+    <a href="#about" data-scroll>Shop</a>
+    <a href="#services" data-scroll>Services</a>
+    <a href="#booking" data-scroll>Book</a>
+    <a href="#gallery" data-scroll>Gallery</a>
+    <a href="#reviews" data-scroll>Reviews</a>
+    <a href="#contact" data-scroll>Contact</a>
+  </div>
+  <a class="btn btn--block" href="#booking" data-scroll>Book appointment <%= icon "arrow", size: 14 %></a>
+</div>
+
+<main>
+  <section id="top" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-toprow">
+        <span><%= @business[:est] %> · <%= @business[:city].upcase %></span>
+        <span class="live-pill"><span></span>Open today until 6pm</span>
+      </div>
+
+      <h1>CRUZ·AUTO<br><em>auto repair</em></h1>
+
+      <div class="hero-subrow">
+        <div class="hero-copy">
+          <span class="eyebrow"><%= @business[:tagline] %></span>
+          <p>Fifteen years with a wrench in hand.<br>Honest diagnostics, clear pricing, and work done with respect in Oak Cliff, Dallas.</p>
+          <div class="btn-row">
+            <a class="btn" href="#booking" data-scroll>Book appointment <%= icon "arrow", size: 14 %></a>
+            <a class="btn btn--ghost" href="#services" data-scroll>View services</a>
+          </div>
+        </div>
+        <div class="hero-meta">
+          <div><span>Experience</span><strong>15 YEARS</strong></div>
+          <div><span>Cars</span><strong>12K+</strong></div>
+          <div><span>Rating</span><strong>4.9 ★</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-bottombar">
+      <span><%= @business[:address] %></span>
+      <span>scroll <%= icon "arrow-down", size: 12 %></span>
+      <span>★ ★ ★ ★ ★ · 187 reviews</span>
+    </div>
+  </section>
+
+  <section id="about" class="section reveal">
+    <div class="container about-grid">
+      <div class="about-photo">
+        <div class="section-num">01</div>
+        <img src="<%= @mechanic[:photo] %>" alt="<%= @mechanic[:full_name] %>">
+        <span class="photo-badge"><%= icon "wrench", size: 11 %><%= @mechanic[:years] %> years in the shop</span>
+        <strong class="photo-name"><%= @mechanic[:full_name] %></strong>
+      </div>
+      <div>
+        <span class="eyebrow">The mechanic · 02</span>
+        <h2 class="section-title">Carlos,<br>the hands<br>behind the scanner.</h2>
+        <p class="script-name"><%= @mechanic[:alias] %></p>
+        <% @mechanic[:bio].each do |paragraph| %>
+          <p class="lead"><%= paragraph %></p>
+        <% end %>
+        <div class="specialties">
+          <% @mechanic[:specialties].each do |specialty| %>
+            <span><i></i><%= specialty %></span>
+          <% end %>
+        </div>
+        <div class="certs">
+          <% @mechanic[:certs].each do |cert| %>
+            <span><%= icon "check", size: 12 %><%= cert %></span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="section section-alt reveal">
+    <div class="container">
+      <div class="split-head">
+        <div>
+          <span class="eyebrow">The menu · 03</span>
+          <h2 class="section-title">Services<br><em>&amp; pricing</em></h2>
+        </div>
+        <p class="lead">No fine print, no surprises. We tell you exactly what your car needs before we touch it. Book the service and we handle the rest.</p>
+      </div>
+
+      <div class="service-list">
+        <% @services.each_with_index do |service, index| %>
+          <a class="service-row" href="#booking" data-scroll data-book-service="<%= service[:id] %>">
+            <span class="row-num"><%= format("%02d", index + 1) %></span>
+            <strong><%= service[:name] %><% if service[:popular] %><small>POPULAR</small><% end %></strong>
+            <span><%= service[:desc] %></span>
+            <span class="duration"><%= icon "clock", size: 14 %><%= service[:duration] %> min</span>
+            <span class="price">$<%= service[:price] %><small>USD</small></span>
+          </a>
+        <% end %>
+      </div>
+
+      <div class="fineprint">
+        <span>Cash, card, Apple Pay, and Zelle. No extra fee for your payment choice.</span>
+        <span>Cancel with 2 hours notice · No-show: $15</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="booking" class="section reveal" data-controller="booking" data-booking>
+    <div class="container">
+      <div class="split-head">
+        <div>
+          <span class="eyebrow">Booking · 04</span>
+          <h2 class="section-title">Bring<br><em>your car.</em></h2>
+        </div>
+        <p class="lead">Four steps. One minute. You receive confirmation by SMS and a reminder the day before. Need to move the appointment? Reply to the message.</p>
+      </div>
+
+      <div class="booking-shell">
+        <aside class="booking-side">
+          <span class="eyebrow">Your appointment</span>
+          <h3>Live<br>booking</h3>
+          <div class="booking-steps" data-step-list></div>
+          <address>
+            <strong>Shop</strong>
+            <span><%= @business[:address] %></span>
+            <a href="tel:+<%= @business[:phone_raw] %>"><%= @business[:phone] %></a>
+          </address>
+        </aside>
+
+        <%= render "appointments/form", appointment_request: @appointment_request, services: @services %>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="section section-alt reveal" data-controller="gallery">
+    <div class="container">
+      <div class="gallery-head">
+        <div>
+          <span class="eyebrow">Work · 05</span>
+          <h2 class="section-title">The live<br><em>portfolio.</em></h2>
+          <p class="lead">Real work, real customers. Upload a before-and-after photo of your car and preview it in the feed.</p>
+        </div>
+        <div class="filter-row" data-gallery-filters>
+          <% ["All", "Engine", "Brakes", "Tires", "Suspension", "Diagnostics"].each do |tag| %>
+            <button type="button" class="<%= "is-active" if tag == "All" %>" data-filter="<%= tag %>"><%= tag %></button>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="gallery-grid" data-gallery>
+        <button class="upload-tile" type="button" data-upload-tile>
+          <%= icon "upload", size: 28 %>
+          <strong>Upload your car</strong>
+          <span>Before and after<br>JPG · PNG</span>
+        </button>
+        <input class="visually-hidden" type="file" accept="image/*" multiple data-upload-input>
+        <% @gallery.each do |photo| %>
+          <button class="gallery-tile" type="button" data-gallery-item data-tag="<%= photo[:tag] %>" data-src="<%= photo[:src] %>" data-caption="<%= photo[:caption] %>">
+            <img src="<%= photo[:src] %>" alt="<%= photo[:caption] %>">
+            <span><%= photo[:tag] %></span>
+            <strong><%= photo[:caption] %></strong>
+          </button>
+        <% end %>
+      </div>
+
+      <div class="gallery-foot">
+        <span><%= icon "instagram", size: 18 %> More work on <strong><%= @business[:instagram] %></strong></span>
+        <span><%= @gallery.length %> jobs · updated this week</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews" class="section reveal">
+    <div class="container">
+      <div class="split-head">
+        <div>
+          <span class="eyebrow">Reviews · 06</span>
+          <h2 class="section-title">What<br><em>customers say.</em></h2>
+        </div>
+        <div class="rating-block">
+          <strong>4.9</strong>
+          <span><% 5.times do %><%= icon "star", size: 14 %><% end %></span>
+          <p><b>187 reviews</b> on Google<br>98% recommend us · 1h response</p>
+        </div>
+      </div>
+
+      <div class="review-grid">
+        <% @reviews.each do |review| %>
+          <article class="review-card">
+            <span class="quote">"</span>
+            <div class="stars"><% review[:stars].times do %><%= icon "star", size: 12 %><% end %></div>
+            <p><%= review[:text] %></p>
+            <footer>
+              <span><%= review[:initials] %></span>
+              <div><strong><%= review[:name] %></strong><small><%= review[:handle] %> · <%= review[:when] %></small></div>
+            </footer>
+          </article>
+        <% end %>
+        <article class="review-card review-cta">
+          <%= icon "star", size: 32 %>
+          <h3>Visited us?</h3>
+          <p>Leave a Google review. It takes 30 seconds and helps us keep growing in the neighborhood.</p>
+          <a class="btn btn--ghost" href="https://google.com" target="_blank" rel="noopener">Leave review <%= icon "arrow", size: 12 %></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section section-alt reveal">
+    <div class="container">
+      <div class="split-head">
+        <div>
+          <span class="eyebrow">Visit us · 07</span>
+          <h2 class="section-title">Oak Cliff,<br><em>W Davis St.</em></h2>
+        </div>
+        <p class="lead">In the heart of W Davis, Oak Cliff. Free parking in front of the shop. Tacos next door, coffee inside.</p>
+      </div>
+
+      <div class="location-grid">
+        <div class="hours-panel">
+          <span class="eyebrow">Hours</span>
+          <h3>When<br>to come.</h3>
+          <% today_index = (Time.zone.today.wday + 6) % 7 %>
+          <div class="hours-list">
+            <% @hours.each_with_index do |hour, index| %>
+              <div class="<%= "is-today" if today_index == index %> <%= "is-closed" unless hour[:open] %>">
+                <span><%= hour[:day] %><% if today_index == index %><small>TODAY</small><% end %></span>
+                <strong><%= hour[:range] %></strong>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="contact-grid">
+            <a href="tel:+<%= @business[:phone_raw] %>"><%= icon "phone", size: 16 %><span>Call</span><strong><%= @business[:phone] %></strong></a>
+            <a href="https://wa.me/<%= @business[:whatsapp] %>" target="_blank" rel="noopener"><%= icon "whatsapp", size: 16 %><span>WhatsApp</span><strong>Quick message</strong></a>
+            <a href="<%= @business[:instagram_url] %>" target="_blank" rel="noopener"><%= icon "instagram", size: 16 %><span>Instagram</span><strong><%= @business[:instagram] %></strong></a>
+            <a href="mailto:<%= @business[:email] %>"><span class="at">@</span><span>Email</span><strong><%= @business[:email] %></strong></a>
+          </div>
+        </div>
+
+        <div class="map-panel">
+          <div class="map-card">
+            <strong>OAK CLIFF · W DAVIS ST</strong>
+            <span>632 W Davis St</span>
+            <small>Dallas, TX 75208</small>
+          </div>
+          <div class="map-pin"><span>CRUZ·AUTO</span><i></i></div>
+          <span class="compass">N</span>
+          <a class="btn" href="https://maps.google.com/?q=632+W+Davis+St+Dallas+TX" target="_blank" rel="noopener"><%= icon "map", size: 14 %> Get directions</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer-main">
+  <div class="container">
+    <div class="footer-big">CRUZ·AUTO</div>
+    <div class="foot-cols">
+      <div>
+        <div class="footer-brand"><span class="brand-mark">CA</span><div><strong>CRUZ·AUTO</strong><small>AUTO REPAIR SHOP · EST. 2011</small></div></div>
+        <p>Skilled repair work in Oak Cliff. Honest diagnostics, clear pricing, and good coffee while you wait for your car.</p>
+        <div class="socials">
+          <a href="<%= @business[:instagram_url] %>" target="_blank" rel="noopener"><%= icon "instagram", size: 16 %></a>
+          <a href="https://wa.me/<%= @business[:whatsapp] %>" target="_blank" rel="noopener"><%= icon "whatsapp", size: 16 %></a>
+          <a href="tel:+<%= @business[:phone_raw] %>"><%= icon "phone", size: 16 %></a>
+        </div>
+      </div>
+      <div><h4>Shop</h4><a href="#about" data-scroll>About Carlos</a><a href="#services" data-scroll>Services</a><a href="#gallery" data-scroll>Gallery</a><a href="#reviews" data-scroll>Reviews</a></div>
+      <div><h4>Book</h4><a href="#booking" data-scroll>Online</a><a href="tel:+<%= @business[:phone_raw] %>">Call</a><a href="https://wa.me/<%= @business[:whatsapp] %>" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:<%= @business[:email] %>">Email</a></div>
+      <div><h4>Visit us</h4><p>632 W Davis St<br>Dallas, TX 75208<br>Oak Cliff</p><p>Mon-Fri · 8am-6pm<br>Sat · 8am-2pm<br>Sun · Closed</p></div>
+    </div>
+    <div class="copyright"><span>© 2026 Cruz Auto · All rights reserved</span><span>Made in Oak Cliff, TX</span></div>
+  </div>
+</footer>
+
+<a class="whatsapp-float" href="https://wa.me/<%= @business[:whatsapp] %>?text=Hello!%20I%20want%20to%20book%20an%20appointment" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <%= icon "whatsapp", size: 26 %>
+  <span>Direct chat</span>
+</a>
+
+<div class="lightbox" data-lightbox hidden>
+  <button type="button" data-lightbox-close aria-label="Close"><%= icon "x", size: 20 %></button>
+  <img src="" alt="">
+  <div><strong></strong><span></span></div>
+</div>

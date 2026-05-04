@@ -1,0 +1,25 @@
+<%= turbo_frame_tag "booking_form", class: "booking-body" do %>
+  <div class="booking-done">
+    <div class="done-check">✓</div>
+    <h3>Appointment requested.</h3>
+    <p class="lead">
+      We will send updates to <strong><%= appointment.customer.phone %></strong>.<br>
+      See you soon, <%= appointment.customer.name.split.first %>.
+    </p>
+
+    <div class="booking-summary">
+      <div><span>Service</span><strong><%= appointment.service.name %> · $<%= appointment.service.price %></strong></div>
+      <div><span>Vehicle</span><strong><%= appointment.vehicle.display_name %></strong></div>
+      <div><span>Date</span><strong><%= appointment.scheduled_at.strftime("%a %b %-d, %Y") %></strong></div>
+      <div><span>Time</span><strong><%= appointment.scheduled_at.strftime("%-I:%M %p") %></strong></div>
+      <div><span>Payment</span><strong><%= appointment.payment&.status&.humanize || appointment.payment_preference.humanize %></strong></div>
+      <div><span>Status</span><strong><%= appointment.status.humanize %></strong></div>
+    </div>
+
+    <% if appointment.payment&.pending? && appointment.payment.pay_now? %>
+      <%= link_to "Continue to payment", payment_checkout_path(appointment.payment.signed_checkout_id), class: "btn btn-primary", data: { turbo_frame: "_top" } %>
+    <% end %>
+
+    <%= link_to "Request another appointment", root_path(anchor: "booking"), class: "btn btn--ghost", data: { turbo_frame: "_top" } %>
+  </div>
+<% end %>
